@@ -154,22 +154,11 @@ delete(N,X,[Y|L], [Y|R]) :-
    %*******************************************************************
 	% format : coordonnees(?Coord, +Matrice, ?Element)
 	% Définit la relation entre des coordonnees [Ligne, Colonne] et un element de la matrice
-	/*
-	Exemples
-	
-	?- coordonnees(Coord, [[a,b,c],[d,e,f]],  e).        % quelles sont les coordonnees de e ?
-	Coord = [2,2]
-	yes
-	
-	?- coordonnees([2,3], [[a,b,c],[d,e,f]],  P).        % qui a les coordonnees [2,3] ?
-	P=f
-	yes
-	*/
 
-	
-	coordonnees([L,C], Mat, Elt) :- true.    %********
-											 % A FAIRE
-											 %********
+	coordonnees([L,C], Mat, Elt) :- nth1(L,Mat,Ligne), nth1(C,Ligne, Elt).
+
+   % Definir ensuite le predicat malplace(P,U,F) qui est vrai si les coordonnes de P dans U et dans F sont differentes.
+   malplace(Elt, S1, S2) :- not((nth1(L,S1,Ligne), nth1(C,Ligne, Elt), nth1(L,S2,LigneF), nth1(C,LigneF,Elt))).
 
 											 
    %*************
@@ -197,6 +186,7 @@ heuristique(U,H) :-
    
     % Definir enfin l'heuristique qui détermine toutes les pièces mal placées (voir prédicat findall) 
 	% et les compte (voir prédicat length)
+
    
     heuristique1(U, H) :- true.     %********
                                     % A FAIRE
