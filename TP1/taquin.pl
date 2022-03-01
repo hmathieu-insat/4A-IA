@@ -144,32 +144,15 @@ delete(N,X,[Y|L], [Y|R]) :-
    N is N1 + 1.
 
    
-   
-   %*******************
-   % PARTIE A COMPLETER
-   %*******************
-   
    %*******************************************************************
    % Coordonnees X(colonne),Y(Ligne) d une piece P dans une situation U
    %*******************************************************************
 	% format : coordonnees(?Coord, +Matrice, ?Element)
 	% Définit la relation entre des coordonnees [Ligne, Colonne] et un element de la matrice
-	/*
-	Exemples
-	
-	?- coordonnees(Coord, [[a,b,c],[d,e,f]],  e).        % quelles sont les coordonnees de e ?
-	Coord = [2,2]
-	yes
-	
-	?- coordonnees([2,3], [[a,b,c],[d,e,f]],  P).        % qui a les coordonnees [2,3] ?
-	P=f
-	yes
-	*/
+	coordonnees([L,C], Mat, Elt) :- nth1(L,Mat,Ligne), nth1(C,Ligne, Elt).
 
-	
-	coordonnees([L,C], Mat, Elt) :- true.  %********
-                                          % A FAIRE
-                                          %********
+   % Definir ensuite le predicat malplace(P,U,F) qui est vrai si les coordonnes de P dans U et dans F sont differentes.
+   malplace(Elt, S1, S2) :- not((nth1(L,S1,Ligne), nth1(C,Ligne, Elt), nth1(L,S2,LigneF), nth1(C,LigneF,Elt))).
 
 											 
    %*************
