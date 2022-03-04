@@ -161,7 +161,7 @@ delete(N,X,[Y|L], [Y|R]) :-
    
 heuristique(U,H) :-
     heuristique1(U, H).  % au debut on utilise l heuristique 1 
-%   heuristique2(U, H).  % ensuite utilisez plutot l heuristique 2  
+    heuristique2(U, H).  % ensuite utilisez plutot l heuristique 2  
    
    
    %****************
@@ -213,10 +213,10 @@ heuristique(U,H) :-
    
    % Somme des distances de Manhattan à parcourir par chaque piece
    % entre sa position courante et sa positon dans l etat final
+   dist_man(Elt, S1, S2, Out) :- coordonnees([L1,C1], S1, Elt) ,
+             coordonnees([L2, C2], S2, Elt), Out is (abs(L2 - L1) + abs(C2 - C1)).
 
+   list_dist(S1, S2, L) :- findall(Out, dist_man(X, S1, S2, Out), L).
    
-    heuristique2(U, H) :- true.     %********
-                                    % A FAIRE
-                                    %********
-									
+   heuristique2(U, H) :- final_state(F), list_dist(U, F, L) , sum_list(L, H). 
 									
