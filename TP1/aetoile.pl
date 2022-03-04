@@ -15,7 +15,7 @@ Rappels sur l'algorithme
    Pu est le meme ensemble mais ordonne lexicographiquement (selon la donnee de
    l'etat). Il permet de retrouver facilement n'importe quel etat pendant
 
-   On gere les 2 ensembles de façon synchronisee : chaque fois qu'on modifie
+   On gere les 2 ensembles de faï¿½on synchronisee : chaque fois qu'on modifie
    (ajout ou retrait d'un etat dans Pf) on fait la meme chose dans Pu.
 
    Q est l'ensemble des etats deja developpes. Comme Pu, il permet de retrouver
@@ -49,13 +49,16 @@ Predicat principal de l'algorithme :
 
 main :-
 	% initialisations Pf, Pu et Q 
-
-	% lancement de Aetoile
-
-	true.   %********
-			% A FAIRE
-			%********
-
+	initial_state(S0),
+	heuristique(S0, H0),
+	G0 is 0,
+	F0 is (G0 + H0),
+	
+	empty(Pfx), empty(Pux), empty(Q),
+	
+	insert(([[F0, H0, G0], S0]), Pfx, Pf), 
+	insert([S0, [F0, H0, G0], nil, nil], Pux, Pu),
+	aetoile(Pf, Pu, Q).
 
 
 %*******************************************************************************
