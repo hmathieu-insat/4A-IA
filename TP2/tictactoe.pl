@@ -160,7 +160,7 @@ alignement_perdant(Ali, J) :- adversaire(J,A), alignement_gagnant(Ali,A).
 	lorsqu'un joueur J joue en coordonnees [L,C]
 	*/	
 
-successeur(J, Etat,[L,C]) :- nth1(L, Etat, Lig), nth1(C, Lig, J).
+successeur(J, Etat,[L,C]) :- nth1(L, Etat, Lig), nth1(C, Lig, J), var(Elem), Elem = J.
 
   
 
