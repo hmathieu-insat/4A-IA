@@ -8,9 +8,9 @@
 
 	Contrairement a la convention du tp precedent, pour modeliser une case libre
 	dans une matrice on n'utilise pas une constante speciale (ex : nil, 'vide', 'libre','inoccupee' ...);
-	On utilise plutôt un identificateur de variable, qui n'est pas unifiee (ex : X, A, ... ou _) .
+	On utilise plutï¿½t un identificateur de variable, qui n'est pas unifiee (ex : X, A, ... ou _) .
 	La situation initiale est une "matrice" 3x3 (liste de 3 listes de 3 termes chacune)
-	où chaque terme est une variable libre.	
+	oï¿½ chaque terme est une variable libre.	
 	Chaque coup d'un des 2 joureurs consiste a donner une valeur (symbole x ou o) a une case libre de la grille
 	et non a deplacer des symboles deja presents sur la grille.		
 	
@@ -118,7 +118,7 @@ possible(  [],  _).
 	*/
 
 % A FAIRE 
-% unifiable(X,J) :- ? ? ? ? ?
+unifiable(X,J) :- not(not(X=J)).
 	
 	/**********************************
 	 DEFINITION D'UN ALIGNEMENT GAGNANT
