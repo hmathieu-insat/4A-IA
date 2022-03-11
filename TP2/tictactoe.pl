@@ -10,10 +10,10 @@
 	dans une matrice on n'utilise pas une constante speciale (ex : nil, 'vide', 'libre','inoccupee' ...);
 	On utilise plut�t un identificateur de variable, qui n'est pas unifiee (ex : X, A, ... ou _) .
 	La situation initiale est une "matrice" 3x3 (liste de 3 listes de 3 termes chacune)
-	o� chaque terme est une variable libre.	
+	o� chaque terme est une variable libre.
 	Chaque coup d'un des 2 joureurs consiste a donner une valeur (symbole x ou o) a une case libre de la grille
-	et non a deplacer des symboles deja presents sur la grille.		
-	
+	et non a deplacer des symboles deja presents sur la grille.
+
 	Pour placer un symbole dans une grille S1, il suffit d'unifier une des variables encore libres de la matrice S1,
 	soit en ecrivant directement Case=o ou Case=x, ou bien en accedant a cette case avec les predicats member, nth1, ...
 	La grille S1 a change d'etat, mais on n'a pas besoin de 2 arguments representant la grille avant et apres le coup,
@@ -22,9 +22,9 @@
 	par un nouvel identificateur).
 	*/
 
-situation_initiale([ [x,_,_],
-                     [o,_,_],
-                     [x,_,_] ]).
+situation_initiale([ [_,_,_],
+                     [_,_,_],
+                     [_,_,_] ]).
 
 	% Convention (arbitraire) : c'est x qui commence
 
@@ -56,12 +56,12 @@ alignement(C, Matrix) :- colonne(  C,Matrix).
 alignement(D, Matrix) :- diagonale(D,Matrix).
 
 	/********************************************
-	 DEFINIR ICI chaque type d'alignement maximal 
+	 DEFINIR ICI chaque type d'alignement maximal
  	 existant dans une matrice carree NxN.
 	 ********************************************/
-	
+
 ligne(L, M) :- member(L,M).
- 
+
 colonne(C,M) :- colonne2(_,C,M).
 colonne2(_,[],[]).
 colonne2(N, [E|C],[L|M]) :- nth1(N,L,E), colonne2(N,C,M).
@@ -75,20 +75,20 @@ colonne2(N, [E|C],[L|M]) :- nth1(N,L,E), colonne2(N,C,M).
 		. . \ . . . / . .
 		. . . \ . / . . .
 		. . . . X . . .
-		. . . / . \ . . . 
+		. . . / . \ . . .
 		. . / . . . \ . .
 		. / . . . . . \ .
 		R . . . . . . . I
 	*/
-		
-diagonale(D, M) :- 
+
+diagonale(D, M) :-
 	premiere_diag(1,D,M).
 
 
 diagonale(D, M) :-
 	seconde_diag(3,D,M).
 
-	
+
 premiere_diag(_,[],[]).
 premiere_diag(K,[E|D],[Ligne|M]) :-
 	nth1(K,Ligne,E),
@@ -100,25 +100,25 @@ seconde_diag(K, [E|D], [Ligne|M]) :-
 	nth1(K, Ligne, E),
 	K1 is K-1,
 	seconde_diag(K1,D,M).
-	
+
 
 
 	/*****************************
-	 DEFINITION D'UN ALIGNEMENT 
+	 DEFINITION D'UN ALIGNEMENT
 	 POSSIBLE POUR UN JOUEUR DONNE
 	 *****************************/
 
 possible([X|L], J) :- unifiable(X,J), possible(L,J).
 possible(  [],  _).
 
-	/* Attention 
+	/* Attention
 	il faut juste verifier le caractere unifiable
 	de chaque emplacement de la liste, mais il ne
 	faut pas realiser l'unification.
 	*/
 
 unifiable(X,J) :- not(not(X=J)).
-	
+
 	/**********************************
 	 DEFINITION D'UN ALIGNEMENT GAGNANT
 	 OU PERDANT POUR UN JOUEUR DONNE J
@@ -127,7 +127,7 @@ unifiable(X,J) :- not(not(X=J)).
 	Un alignement gagnant pour J est un alignement
 possible pour J qui n'a aucun element encore libre.
 	*/
-	
+
 	/*
 	Remarque : le predicat ground(X) permet de verifier qu'un terme
 	prolog quelconque ne contient aucune partie variable (libre).
@@ -141,7 +141,7 @@ possible pour J qui n'a aucun element encore libre.
 		?- ground( [1, toto(nil), foo(a,B,c)] ).
 		no
 	*/
-		
+
 	/* Un alignement perdant pour J est un alignement gagnant pour son adversaire. */
 
 
@@ -154,15 +154,15 @@ alignement_perdant(Ali, J) :- adversaire(J,A), alignement_gagnant(Ali,A).
 	DEFINITION D'UN ETAT SUCCESSEUR
 	****************************** */
 
-	/* 
+	/*
 	Il faut definir quelle operation subit la matrice
 	M representant l'Etat courant
 	lorsqu'un joueur J joue en coordonnees [L,C]
-	*/	
+	*/
 
 successeur(J, Etat,[L,C]) :- nth1(L, Etat, Lig), nth1(C, Lig, J), var(Elem), Elem = J.
 
-  
+
 
 	/**************************************
    	 EVALUATION HEURISTIQUE D'UNE SITUATION
@@ -183,11 +183,11 @@ heuristique(J,Situation,H) :-		% cas 1
    H = 10000,				% grand nombre approximant +infini
    alignement(Alig,Situation),
    alignement_gagnant(Alig,J), !.
-	
+
 heuristique(J,Situation,H) :-		% cas 2
    H = -10000,				% grand nombre approximant -infini
    alignement(Alig,Situation),
-   alignement_perdant(Alig,J), !.	
+   alignement_perdant(Alig,J), !.
 
 heuristique(J,Situation,H) :-
 	findall(Ali,ali_possible(Situation, Ali, J),ListAlign),
@@ -197,12 +197,15 @@ heuristique(J,Situation,H) :-
 	length(ListAlignAdv, N2),
 	H is N1-N2.
 
+% Tests unitaires
 
+vic_x([[x,x,x], [_,_,_], [_,_,_]]).
+loss_x([[o,o,o], [_,_,_], [_,_,_]]).
+draw([[o,x,o],
+	[x,o,o],
+	[x,o,x]]).
 
-% on ne vient ici que si les cut precedents n'ont pas fonctionne,
-% c-a-d si Situation n'est ni perdante ni gagnante.
-
-% A FAIRE 					cas 3
-% heuristique(J,Situation,H) :- ? ? ? ?
-
+:- vic_x(S), heuristique(x, S, H), H = 10000.
+:- loss_x(S), heuristique(x, S, H), H = -10000.
+:- draw(S), heuristique(x, S, H), H = 0.
 
