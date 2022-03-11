@@ -147,9 +147,9 @@ possible pour J qui n'a aucun element encore libre.
 
 % A FAIRE
 
-% alignement_gagnant(Ali, J) :- ? ? ? ?
+alignement_gagnant(Ali, J) :- ground(Ali), possible(Ali, J).
 
-% alignement_perdant(Ali, J) :- ? ? ? ?
+alignement_perdant(Ali, J) :- adversaire(J,A), alignement_gagnant(Ali,A).
 
 
 	/* ****************************
