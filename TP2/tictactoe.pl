@@ -177,6 +177,7 @@ successeur(J, Etat,[L,C]) :- nth1(L, Etat, Lig), nth1(C, Lig, J), var(Elem), Ele
  	   le nombre d'alignements possibles pour l'adversaire de J
 */
 
+ali_possible(Situation, Ali, J) :- alignement(Ali, Situation), possible(Ali,J).
 
 heuristique(J,Situation,H) :-		% cas 1
    H = 10000,				% grand nombre approximant +infini
@@ -187,6 +188,15 @@ heuristique(J,Situation,H) :-		% cas 2
    H = -10000,				% grand nombre approximant -infini
    alignement(Alig,Situation),
    alignement_perdant(Alig,J), !.	
+
+heuristique(J,Situation,H) :-
+	findall(Ali,ali_possible(Situation, Ali, J),ListAlign),
+	length(ListAlign, N1),
+	adversaire(J,A),
+	findall(Ali, ali_possible(Situation, Ali, A), ListAlignAdv),
+	length(ListAlignAdv, N2),
+	H is N1-N2.
+
 
 
 % on ne vient ici que si les cut precedents n'ont pas fonctionne,
