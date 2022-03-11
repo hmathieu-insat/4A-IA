@@ -63,11 +63,29 @@ main :-
 
 %*******************************************************************************
 
-aetoile(Pf, Ps, Qs) :-
-	true.   %********
-			% A FAIRE
-			%********
+aetoile(Pf, Pu, Qu) :-
+	empty(Pf), empty(Pu), write("PAS de solution : l'etat final n'est pas atteignable").
+
+aetoile(Pf, Pu, Qu) :-
+	suppress_min([[_,_,G], S], Pf, X), final_state(S), 
+	affiche_solution(S).
+	
+aetoile(Pf, Pu, Q) :-
+	suppress_min(U, Pf, Pf_new), suppress(U, Pu, Pu_new),
+	expand(U, Slist),
+	loop_successors(Slist, Pu_new, Pf_new, Pu_n, Pf_n),
+	insert(U, Q, Q_new),
+	aetoile(Pf_n, Pf_n, Q_new).
+
+expand(U, Slist) :-
+	findall(S2, rule(X, 1, U, S2), Successors),
+	
 	
 
+% loop_successors
 	
+	% Tests unitaires
+% :- empty(FinA), final_state(Fin), insert([[0,0,0] ,Fin] , FinA, Finx), aetoile(Finx, nil, nil).
+% :- empty(FinA), initial_state(Fin), insert([[0,0,0] ,Fin] , FinA, Finx), aetoile(Finx, nil, nil).
+
    
