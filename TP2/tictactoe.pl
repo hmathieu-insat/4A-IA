@@ -117,7 +117,6 @@ possible(  [],  _).
 	faut pas realiser l'unification.
 	*/
 
-% A FAIRE 
 unifiable(X,J) :- not(not(X=J)).
 	
 	/**********************************
@@ -145,7 +144,6 @@ possible pour J qui n'a aucun element encore libre.
 		
 	/* Un alignement perdant pour J est un alignement gagnant pour son adversaire. */
 
-% A FAIRE
 
 alignement_gagnant(Ali, J) :- ground(Ali), possible(Ali, J).
 
