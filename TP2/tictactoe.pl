@@ -22,9 +22,9 @@
 	par un nouvel identificateur).
 	*/
 
-situation_initiale([ [_,_,_],
-                     [_,_,_],
-                     [_,_,_] ]).
+situation_initiale([ [x,_,_],
+                     [o,_,_],
+                     [x,_,_] ]).
 
 	% Convention (arbitraire) : c'est x qui commence
 
@@ -60,9 +60,11 @@ alignement(D, Matrix) :- diagonale(D,Matrix).
  	 existant dans une matrice carree NxN.
 	 ********************************************/
 	
-% ligne(L, M) :-  ? ? ? ?
+ligne(L, M) :- member(L,M).
  
-% colonne(C,M) :- ? ? ? ?
+colonne(C,M) :- colonne2(_,C,M).
+colonne2(_,[],[]).
+colonne2(N, [E|C],[L|M]) :- nth1(N,L,E), colonne2(N,C,M).
 
 	/* Definition de la relation liant une diagonale D a la matrice M dans laquelle elle se trouve.
 		il y en a 2 sortes de diagonales dans une matrice carree(https://fr.wikipedia.org/wiki/Diagonale) :
