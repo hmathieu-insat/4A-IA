@@ -53,9 +53,22 @@
 	- finalement le couple retourne par negamax est [Coup, V2]
 	avec : V2 is -V1 (cf. convention negamax vue en cours).
 
-A FAIRE : ECRIRE ici les clauses de negamax/5
-.....................................
-	*/
+A FAIRE : ECRIRE ici les clauses de negamax/5*/
+	
+	negamax(J,E,Pmax,Pmax,[rien,Val]):-
+    	heuristique(J,E,Val).
+
+	negamax(J,E,_,_,[rien,Val]):-
+    	situation_terminale(J,E),
+    	heuristique(J,E,Val).
+	
+	negamax(J,E,P,Pmax,[Coup,Val]):-
+    	sucesseurs(J,E,Succ),
+    	loop_negamax(J,P,Pmax,Succ,SuccSuiv),
+    	meilleur(SuccSuiv,[Coup2,Val2]),
+    	Coup = Coup2,
+    	Val = -Val2.
+    	
 
 
 	/*******************************************
@@ -119,6 +132,17 @@ A FAIRE : commenter chaque litteral de la 2eme clause de loop_negamax/5,
 A FAIRE : ECRIRE ici les clauses de meilleur/2
 	*/
 
+	meilleur([Elem],Elem).
+
+	meilleur([[_,Val]|Tail],MCouple):-
+    	meilleur(Tail,[Coup2,Val2]),
+    	Val > Val2,
+    	MCouple = [Coup2,Val2].
+	
+	meilleur([[Coup,Val]|Tail],MCouple):-
+    	meilleur(Tail,[_,Val2]),
+    	Val =< Val2,
+    	MCouple = [Coup,Val].
 
 
 	/******************
@@ -126,14 +150,14 @@ A FAIRE : ECRIRE ici les clauses de meilleur/2
   	*******************/
 
 main(B,V, Pmax) :-
-
-	true.        
+	situation_initiale(Ini),
+    joueur_initial(J),
+    negamax(J,Ini,1,Pmax,[B,V]).
 
 
 	/*
 A FAIRE :
-	Compléter puis tester le programme principal pour plusieurs valeurs de la profondeur maximale.
+	Complï¿½ter puis tester le programme principal pour plusieurs valeurs de la profondeur maximale.
 	Pmax = 1, 2, 3, 4 ...
-	Commentez les résultats obtenus.
+	Commentez les rï¿½sultats obtenus.
 	*/
-
