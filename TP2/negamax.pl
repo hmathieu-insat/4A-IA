@@ -59,26 +59,18 @@ A FAIRE : ECRIRE ici les clauses de negamax/5*/
     	heuristique(J,E,Val).
 
 	negamax(J,E,P,Pmax,[rien,Val]):-
-    	P<Pmax
+    	P<Pmax,
     	ground(Etat),
     	heuristique(J,E,Val).
 	
 	negamax(J,E,P,Pmax,[Coup,Val]):-
-<<<<<<< HEAD
-    	successeurs(J,E,Succ),
-=======
     	P<Pmax,
     	not(ground(E)),
-    	sucesseurs(J,E,Succ),
->>>>>>> test negamax main
+    	successeurs(J,E,Succ),
     	loop_negamax(J,P,Pmax,Succ,SuccSuiv),
     	meilleur(SuccSuiv,[Coup2,Val2]),
     	Coup = Coup2,
     	Val is -Val2.
-<<<<<<< HEAD
-		
-=======
->>>>>>> test negamax main
     	
 
 
@@ -163,7 +155,19 @@ A FAIRE : ECRIRE ici les clauses de meilleur/2
 main(B,V, Pmax) :-
 	situation_initiale(Ini),
     joueur_initial(J),
-    negamax(J,Ini,1,Pmax,[B,V]).
+	main_loop(Ini, J, 1, B, V, Pmax).
+
+
+main_loop(Situation, Joueur, Profondeur, B, V, Pmax=) :-
+	negamax(Joueur, Situation, Profondeur,Pmax,[B,V]),
+	successeur(Joueur, Situation, B),
+	adversaire(Joueur, J2),
+	Profondeur2 is (Profondeur + 1),
+	main_loop(Situation, J2, Profondeur2, B, V, Pmax).
+
+main_loop(Situation, _, _, _, _, _) :-
+	situation_terminale(_, Situation).
+
 
 main_g(B,V,Pmax) :-
     situation_gagnante(Ini),

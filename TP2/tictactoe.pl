@@ -26,16 +26,16 @@ situation_initiale([ [_,_,_],
                      [_,_,_],
                      [_,_,_] ]).
 
-situation_gagnante([x,x,x],[o,o,_],[o,_,_]).
+situation_gagnante([[x,x,x],[o,o,_],[o,_,_]]).
 
-situation_nulle([o,x,o],[x,o,x],[x,o,x]).
+situation_nulle([[o,x,o],[x,o,x],[x,o,x]]).
 
-situation_heuristique([x,_,x],[o,x,o],[o,_,o]).
+situation_heuristique([[x,_,x],[o,x,o],[o,_,o]]).
 
-situation_test([o,x,_],[x,_,_],[_,_,_]).
+situation_test([[o,x,_],[x,_,_],[_,_,_]]).
 	% Convention (arbitraire) : c'est x qui commence
 
-joueur_initial(x).
+joueur_initial(o).
 
 
 	% Definition de la relation adversaire/2
