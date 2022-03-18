@@ -7,7 +7,7 @@
 	Chaque case est soit un emplacement libre (Variable LIBRE), soit contient le symbole d'un des 2 joueurs (o ou x)
 
 	Contrairement a la convention du tp precedent, pour modeliser une case libre
-	dans une matrice on n'utilise pas une constante speciale (ex : nil, 'vide', 'libre','inoccupee' ...);
+	dans une matrice on n'utilise pas une constante speciahttps://swish.swi-prolog.org/#tabbed-tab-1le (ex : nil, 'vide', 'libre','inoccupee' ...);
 	On utilise plut�t un identificateur de variable, qui n'est pas unifiee (ex : X, A, ... ou _) .
 	La situation initiale est une "matrice" 3x3 (liste de 3 listes de 3 termes chacune)
 	o� chaque terme est une variable libre.
@@ -26,6 +26,13 @@ situation_initiale([ [_,_,_],
                      [_,_,_],
                      [_,_,_] ]).
 
+situation_gagnante([x,x,x],[o,o,_],[o,_,_]).
+
+situation_nulle([o,x,o],[x,o,x],[x,o,x]).
+
+situation_heuristique([x,_,x],[o,x,o],[o,_,o]).
+
+situation_test([o,x,_],[x,_,_],[_,_,_]).
 	% Convention (arbitraire) : c'est x qui commence
 
 joueur_initial(x).
