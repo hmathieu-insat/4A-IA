@@ -67,7 +67,8 @@ A FAIRE : ECRIRE ici les clauses de negamax/5*/
     	loop_negamax(J,P,Pmax,Succ,SuccSuiv),
     	meilleur(SuccSuiv,[Coup2,Val2]),
     	Coup = Coup2,
-    	Val = -Val2.
+    	Val is -Val2.
+		
     	
 
 
