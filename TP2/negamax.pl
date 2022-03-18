@@ -63,7 +63,7 @@ A FAIRE : ECRIRE ici les clauses de negamax/5*/
     	heuristique(J,E,Val).
 	
 	negamax(J,E,P,Pmax,[Coup,Val]):-
-    	sucesseurs(J,E,Succ),
+    	successeurs(J,E,Succ),
     	loop_negamax(J,P,Pmax,Succ,SuccSuiv),
     	meilleur(SuccSuiv,[Coup2,Val2]),
     	Coup = Coup2,
