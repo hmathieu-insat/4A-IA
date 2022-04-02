@@ -65,7 +65,7 @@ main :-
 %*******************************************************************************
 
 aetoile(Pf, Pu, _) :-
-	empty(Pf), empty(Pu), write("PAS de solution : l'etat final n'est pas atteignable").
+	empty(Pf), empty(Pu), write("PAS de solution : l'etat final n'est pas atteignable"),!.
 
 aetoile(Pf, _, _) :-
 	suppress_min([[_,_,_], S], Pf, _), final_state(S), 
@@ -76,9 +76,10 @@ aetoile(Pf, Pu, Q) :-
 
 	suppress([U, _, _, _], Pu, Pu_new),
 	expand([[F, H, G], U], Slist),	% Le prédicat expand renvoie la liste des successeurs de U et leur évaluation
-	write(Slist), nl,
+	write("**** Listes des successeurs a un coup donne : "), write(Slist), nl,
 	loop_successors(Slist, Q, Pu_new, Pf_new, Pu_n, Pf_n, U), % On itère sur les successeurs et on les traite
 	insert(U, Q, Q_new),
+	write("**** Liste des etats joues : "), put_90(Q_new), nl,
 	aetoile(Pf_n, Pu_n, Q_new).
 
 
@@ -94,26 +95,32 @@ loop_successors([ [_, S] | TL], Q, Pu, Pf, _, _, Pere) :-
 	loop_successors(TL, Q, Pu, Pf, _, _, Pere).
 
 loop_successors([ [Eval, S] | TL], Q, Pu, Pf, Pu_new, Pf_new, Pere) :-
-	suppress([S, _, _, _], Pu, Pun),	% Le prédicat échoue si S n'est pas dans Pu
-	write("S est deja dans Pu"), nl,
+	write("---- Pu avant: ---- ") , put_90(Pu), nl,
+	suppress([S, _, _ , _], Pu, Pun),	% Le prédicat échoue si S n'est pas dans Pu
+	write("!!! S est deja dans Pu !!!"), nl,
 	suppress([EvalF, S], Pf, Pfn),		% Permet de récupérer l'évaluation correspondante dans Pf
 	( Eval @< EvalF ->
 		insert([Eval, S], Pfn, Pf_new),
-		insert([Eval, S], Pun, Pu_new)
+		insert([Eval, S], Pun, Pu_new),
+		write("S est meilleur que l'etat deja rencontre"), nl,
+		loop_successors(TL, Q, Pu_new, Pf_new, _, _, Pere)
 	;
-		Pu_new = Pu, Pf_new = Pf
-	),
-	loop_successors(TL, Q, Pu_new, Pf_new, _, _, Pere).
+		write("S est moins bon que l'etat deja rencontre"), nl,
+
+		loop_successors(TL, Q, Pu, Pf, _, _, Pere)
+	).
+	% loop_successors(TL, Q, Pu_new, Pf_new, _, _, Pere).
 	
 loop_successors([ [Eval, S] | TL], Q, Pu, Pf, Pu_new, Pf_new, Pere) :-
 	write("S doit etre ajoute: "), write(S), nl,
+	rule(X, _, Pere, S),
 	insert([Eval, S], Pf, Pf_new),
-	insert( [S, Eval, Pere, _], Pu, Pu_new),
+	insert( [S, Eval, Pere, X], Pu, Pu_new),
 	write("Les successeurs de l'etat sont toujours : "), write(TL), nl,
 	loop_successors(TL, Q, Pu_new, Pf_new, _, _, Pere).
 
 affiche_solution(S) :-
-	write("Solution : ").
+	write("Solution : "),!.
 
 
 	
