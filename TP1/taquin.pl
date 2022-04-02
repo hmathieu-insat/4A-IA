@@ -160,8 +160,8 @@ delete(N,X,[Y|L], [Y|R]) :-
    %*************
    
 heuristique(U,H) :-
-    heuristique1(U, H).  % au debut on utilise l heuristique 1 
-    %heuristique2(U, H).  % ensuite utilisez plutot l heuristique 2  
+   %  heuristique1(U, H).  % au debut on utilise l heuristique 1 
+    heuristique2(U, H).  % ensuite utilisez plutot l heuristique 2  
    
    
    %****************
@@ -218,5 +218,15 @@ heuristique(U,H) :-
 
    list_dist(S1, S2, L) :- findall(Out, dist_man(_, S1, S2, Out), L).
    
-   heuristique2(U, H) :- final_state(F), list_dist(U, F, L), sum_list(L, H). 
-									
+   heuristique2(U, H) :- final_state(F), list_dist(U, F, L), sum_list(L, H).
+
+
+%**** Tests unitaires
+
+%** Heuristique 1
+:- initial_state(U0), heuristique1(U0, 4). % On attend une valeur de heuristice1 de 4 pour la situation initiale
+:- final_state(F), heuristique1(F, 0). % On attend une valeur de heuristice1 de 0 pour l etat final
+
+%** Heuristique 2
+:- initial_state(U0), heuristique2(U0, 6). % On attend une valeur de heuristice2 de 6 pour la situation initiale
+:- final_state(F), heuristique2(F, 0). % On attend une valeur de heuristice2 de 0 pour l etat final
