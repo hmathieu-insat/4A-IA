@@ -51,38 +51,71 @@ main :-
 	% initialisations Pf, Pu et Q 
 	initial_state(S0),
 	heuristique(S0, H0),
-	G0 is 0,
+	G0 is 0,			
 	F0 is (G0 + H0),
 	
-	empty(Pfx), empty(Pux), empty(Q),
+	empty(Pfx), empty(Pux), empty(Q),	% Création des 3 AVLs vides
 	
 	insert(([[F0, H0, G0], S0]), Pfx, Pf), 
 	insert([S0, [F0, H0, G0], nil, nil], Pux, Pu),
+	
 	aetoile(Pf, Pu, Q).
 
 
 %*******************************************************************************
 
-aetoile(Pf, Pu, Qu) :-
+aetoile(Pf, Pu, _) :-
 	empty(Pf), empty(Pu), write("PAS de solution : l'etat final n'est pas atteignable").
 
-aetoile(Pf, Pu, Qu) :-
-	suppress_min([[_,_,G], S], Pf, X), final_state(S), 
+aetoile(Pf, _, _) :-
+	suppress_min([[_,_,_], S], Pf, _), final_state(S), 
 	affiche_solution(S).
 	
 aetoile(Pf, Pu, Q) :-
-	suppress_min(U, Pf, Pf_new), suppress(U, Pu, Pu_new),
-	expand(U, Slist),
-	loop_successors(Slist, Pu_new, Pf_new, Pu_n, Pf_n),
+	suppress_min([[F, H, G], U], Pf, Pf_new), 
+
+	suppress([U, _, _, _], Pu, Pu_new),
+	expand([[F, H, G], U], Slist),	% Le prédicat expand renvoie la liste des successeurs de U et leur évaluation
+	write(Slist), nl,
+	loop_successors(Slist, Q, Pu_new, Pf_new, Pu_n, Pf_n, U), % On itère sur les successeurs et on les traite
 	insert(U, Q, Q_new),
-	aetoile(Pf_n, Pf_n, Q_new).
+	aetoile(Pf_n, Pu_n, Q_new).
 
-expand(U, Slist) :-
-	findall(S2, rule(X, 1, U, S2), Successors),
-	
-	
 
-% loop_successors
+expand([[_, _, G], U], Slist) :-
+	findall([[Fs, Hs, Gs], S2], (rule(_, Cout, U, S2), Gs is G + Cout, heuristique(S2, Hs), Fs is Gs + Hs), Slist).
+
+
+loop_successors([], _, _, _, _, _, _) :- write("Plus de successeurs"), nl.
+	
+loop_successors([ [_, S] | TL], Q, Pu, Pf, _, _, Pere) :-
+	belongs(S, Q),
+	write("S est deja dans Q"), nl,
+	loop_successors(TL, Q, Pu, Pf, _, _, Pere).
+
+loop_successors([ [Eval, S] | TL], Q, Pu, Pf, Pu_new, Pf_new, Pere) :-
+	suppress([S, _, _, _], Pu, Pun),	% Le prédicat échoue si S n'est pas dans Pu
+	write("S est deja dans Pu"), nl,
+	suppress([EvalF, S], Pf, Pfn),		% Permet de récupérer l'évaluation correspondante dans Pf
+	( Eval @< EvalF ->
+		insert([Eval, S], Pfn, Pf_new),
+		insert([Eval, S], Pun, Pu_new)
+	;
+		Pu_new = Pu, Pf_new = Pf
+	),
+	loop_successors(TL, Q, Pu_new, Pf_new, _, _, Pere).
+	
+loop_successors([ [Eval, S] | TL], Q, Pu, Pf, Pu_new, Pf_new, Pere) :-
+	write("S doit etre ajoute: "), write(S), nl,
+	insert([Eval, S], Pf, Pf_new),
+	insert( [S, Eval, Pere, _], Pu, Pu_new),
+	write("Les successeurs de l'etat sont toujours : "), write(TL), nl,
+	loop_successors(TL, Q, Pu_new, Pf_new, _, _, Pere).
+
+affiche_solution(S) :-
+	write("Solution : ").
+
+
 	
 	% Tests unitaires
 % :- empty(FinA), final_state(Fin), insert([[0,0,0] ,Fin] , FinA, Finx), aetoile(Finx, nil, nil).
