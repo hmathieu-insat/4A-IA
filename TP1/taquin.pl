@@ -213,7 +213,8 @@ heuristique(U,H) :-
    
    % Somme des distances de Manhattan à parcourir par chaque piece
    % entre sa position courante et sa positon dans l etat final
-   dist_man(Elt, S1, S2, Out) :- coordonnees([L1,C1], S1, Elt) ,
+   dist_man(vide, _, _, 0).
+   dist_man(Elt, S1, S2, Out) :- dif(vide, Elt), coordonnees([L1,C1], S1, Elt),
              coordonnees([L2, C2], S2, Elt), Out is (abs(L2 - L1) + abs(C2 - C1)).
 
    list_dist(S1, S2, L) :- findall(Out, dist_man(_, S1, S2, Out), L).
@@ -228,5 +229,5 @@ heuristique(U,H) :-
 :- final_state(F), heuristique1(F, 0). % On attend une valeur de heuristice1 de 0 pour l etat final
 
 %** Heuristique 2
-:- initial_state(U0), heuristique2(U0, 6). % On attend une valeur de heuristice2 de 6 pour la situation initiale
+:- initial_state(U0), heuristique2(U0, 5). % On attend une valeur de heuristice2 de 5 pour la situation initiale
 :- final_state(F), heuristique2(F, 0). % On attend une valeur de heuristice2 de 0 pour l etat final
