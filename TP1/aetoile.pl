@@ -75,11 +75,11 @@ aetoile(Pf, _, Q) :-
 aetoile(Pf, Pu, Q) :-
 	suppress_min([[F, H, G], U], Pf, Pf_new), 
 
-	suppress([U, _, _, _], Pu, Pu_new),
+	suppress([U, Val, Pere, Action], Pu, Pu_new),
 	expand([[F, H, G], U], Slist),	% Le prédicat expand renvoie la liste des successeurs de U et leur évaluation
 	write("**** Listes des successeurs a un coup donne : "), write(Slist), nl,
 	loop_successors(Slist, Q, Pu_new, Pf_new, Pu_n, Pf_n, U), % On itère sur les successeurs et on les traite
-	insert(U, Q, Q_new),
+	insert([U, Val, Pere, Action], Q, Q_new),
 	write("**** Liste des etats joues : "), put_90(Q_new), nl,
 	write("**** Nouvel ensemble de Pf : "), put_90(Pf_n), nl,
 	aetoile(Pf_n, Pu_n, Q_new).
@@ -94,7 +94,7 @@ loop_successors([], _, Pu, Pf, Pu_new, Pf_new, _) :-
 	write("Plus de successeurs"), nl.
 	
 loop_successors([ [_, S] | TL], Q, Pu, Pf, Pu_new, Pf_new, Pere) :-
-	belongs(S, Q),
+	belongs([S,_,_,_], Q),
 	write("S est deja dans Q"), nl,
 	loop_successors(TL, Q, Pu, Pf, Pu_new, Pf_new, Pere).
 
