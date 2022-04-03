@@ -220,7 +220,8 @@ situation_test([  [o,x,_],
 :- situation_gagnante([Ali,_,_]), alignement_gagnant(Ali,o).
 :- situation_perdante([Ali,_,_]), alignement_perdant(Ali,o).
 
-:- situation_gagnante(S), heuristique(o, S, H), H = 10000.
-:- situation_perdante(S), heuristique(o, S, H), H = -10000.
-:- situation_nulle(S), heuristique(o, S, H), H = 0.
-
+:- situation_gagnante(S), heuristique(o, S, 10000).
+:- situation_perdante(S), heuristique(o, S, -10000).
+:- situation_nulle(S), heuristique(o, S, 0).
+:- situation_heuristique(S), heuristique(o, S, -1).
+:- situation_test(S), heuristique(o, S, 1).
