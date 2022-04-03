@@ -26,15 +26,6 @@ situation_initiale([ [_,_,_],
                      [_,_,_],
                      [_,_,_] ]).
 
-situation_gagnante([[x,x,x],[o,o,_],[o,_,_]]).
-
-situation_nulle([[o,x,o],[x,o,x],[x,o,x]]).
-
-situation_heuristique([[x,_,x],[o,x,o],[o,_,o]]).
-
-situation_test([[o,x,_],[x,_,_],[_,_,_]]).
-	% Convention (arbitraire) : c'est x qui commence
-
 joueur_initial(o).
 
 
@@ -206,13 +197,30 @@ heuristique(J,Situation,H) :-
 
 % Tests unitaires
 
-vic_x([[x,x,x], [_,_,_], [_,_,_]]).
-loss_x([[o,o,o], [_,_,_], [_,_,_]]).
-draw([[o,x,o],
-	[x,o,o],
-	[x,o,x]]).
+situation_gagnante([ [o,o,o],
+							[x,x,o],
+							[x,o,x]]).
 
-:- vic_x(S), heuristique(x, S, H), H = 10000.
-:- loss_x(S), heuristique(x, S, H), H = -10000.
-:- draw(S), heuristique(x, S, H), H = 0.
+situation_perdante([ [x,x,x],
+							[o,o,x],
+							[o,x,o]]).
+
+situation_nulle([ [o,x,o],
+						[x,o,x],
+						[x,o,x]]).
+
+situation_heuristique([ [x,_,x],
+								[o,x,o],
+								[o,_,o]]).
+
+situation_test([  [o,x,_],
+						[x,_,_],
+						[_,_,o]]).
+
+:- situation_gagnante([Ali,_,_]), alignement_gagnant(Ali,o).
+:- situation_perdante([Ali,_,_]), alignement_perdant(Ali,o).
+
+:- situation_gagnante(S), heuristique(o, S, H), H = 10000.
+:- situation_perdante(S), heuristique(o, S, H), H = -10000.
+:- situation_nulle(S), heuristique(o, S, H), H = 0.
 
