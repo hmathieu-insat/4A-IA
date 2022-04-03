@@ -60,7 +60,7 @@ A FAIRE : ECRIRE ici les clauses de negamax/5*/
 
 	negamax(J,E,P,Pmax,[rien,Val]):-
     	P<Pmax,
-    	ground(Etat),
+    	ground(E),
     	heuristique(J,E,Val).
 	
 	negamax(J,E,P,Pmax,[Coup,Val]):-
@@ -89,7 +89,7 @@ A FAIRE : ECRIRE ici les clauses de negamax/5*/
 successeurs(J,Etat,Succ) :-
 	copy_term(Etat, Etat_Suiv),
 	findall([Coup,Etat_Suiv],
-		    successeur(J,Etat_Suiv,Coup),
+		    successeur(J,Etat,Coup, Etat_Suiv),
 		    Succ).
 
 	/*************************************
@@ -155,10 +155,11 @@ A FAIRE : ECRIRE ici les clauses de meilleur/2
 main(B,V, Pmax) :-
 	situation_initiale(Ini),
     joueur_initial(J),
-	main_loop(Ini, J, 1, B, V, Pmax).
+	negamax(J, Ini, 0, Pmax, [B,V]).
+	%main_loop(Ini, J, 1, B, V, Pmax).
 
 
-main_loop(Situation, Joueur, Profondeur, B, V, Pmax=) :-
+main_loop(Situation, Joueur, Profondeur, B, V, Pmax) :-
 	negamax(Joueur, Situation, Profondeur,Pmax,[B,V]),
 	successeur(Joueur, Situation, B),
 	adversaire(Joueur, J2),
@@ -168,6 +169,11 @@ main_loop(Situation, Joueur, Profondeur, B, V, Pmax=) :-
 main_loop(Situation, _, _, _, _, _) :-
 	situation_terminale(_, Situation).
 
+
+main_p(B,V,Pmax) :-
+    situation_perdante(Ini),
+    joueur_initial(J),
+    negamax(J,Ini,1,Pmax,[B,V]).
 
 main_g(B,V,Pmax) :-
     situation_gagnante(Ini),
@@ -188,6 +194,15 @@ main_test(B,V,Pmax) :-
     situation_test(Ini),
     joueur_initial(J),
     negamax(J,Ini,1,Pmax,[B,V]).
+
+% Tests unitaires
+
+:- situation_heuristique(S), successeurs(o,S,[[[1,2],[[x,o,x],
+													  [o,x,o],
+												 	  [o,_,o]]],
+											 [[3,2],[[x,_,x],
+												 	 [o,x,o],
+												 	 [o,o,o]]]]).
 
 	/*
 A FAIRE :
