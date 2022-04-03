@@ -67,8 +67,9 @@ main :-
 aetoile(Pf, Pu, _) :-
 	empty(Pf), empty(Pu), write("PAS de solution : l'etat final n'est pas atteignable"),!.
 
-aetoile(Pf, _, _) :-
-	suppress_min([[_,_,_], S], Pf, _), final_state(S), 
+aetoile(Pf, _, Q) :-
+	suppress_min([[_,_,_], S], Pf, _), final_state(S),
+	write("Q est "), put_90(Q), nl,
 	affiche_solution(S).
 	
 aetoile(Pf, Pu, Q) :-
@@ -80,6 +81,7 @@ aetoile(Pf, Pu, Q) :-
 	loop_successors(Slist, Q, Pu_new, Pf_new, Pu_n, Pf_n, U), % On itère sur les successeurs et on les traite
 	insert(U, Q, Q_new),
 	write("**** Liste des etats joues : "), put_90(Q_new), nl,
+	write("**** Nouvel ensemble de Pf : "), put_90(Pf_n), nl,
 	aetoile(Pf_n, Pu_n, Q_new).
 
 
@@ -87,7 +89,9 @@ expand([[_, _, G], U], Slist) :-
 	findall([[Fs, Hs, Gs], S2], (rule(_, Cout, U, S2), Gs is G + Cout, heuristique(S2, Hs), Fs is Gs + Hs), Slist).
 
 
-loop_successors([], _, _, _, _, _, _) :- write("Plus de successeurs"), nl.
+loop_successors([], _, Pu, Pf, Pu_new, Pf_new, _) :- 
+	Pu_new = Pu, Pf_new = Pf,
+	write("Plus de successeurs"), nl.
 	
 loop_successors([ [_, S] | TL], Q, Pu, Pf, Pu_new, Pf_new, Pere) :-
 	belongs(S, Q),
