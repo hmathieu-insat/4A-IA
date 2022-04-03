@@ -42,7 +42,7 @@ adversaire(o,x).
 	 continuer a jouer (quel qu'il soit).
 	 ****************************************************/
 
-situation_terminale(_Joueur, Situation) :-	 ground(Situation).
+situation_terminale(_Joueur, Situation) :- ground(Situation).
 
 
 	/***************************
@@ -216,6 +216,30 @@ situation_heuristique([ [x,_,x],
 situation_test([  [o,x,_],
 						[x,_,_],
 						[_,_,o]]).
+
+:- ligne([x,x,o], [[o,_,x],
+						[x,x,o],
+						[o,_,o]]).
+:- not(ligne([o,x,o],[[o,_,x],
+							 [x,x,o],
+							 [o,_,x]])).
+
+:- colonne([o,x,o], [[o,_,x],
+							[x,x,o],
+							[o,_,o]]).
+:- not(colonne([x,x,o],[[o,_,x],
+								[x,x,o],
+								[o,x,o]])).
+
+:- diagonale([x,x,o],[[o,_,x],
+							 [x,x,o],
+							 [o,_,o]]).
+:- diagonale([o,x,o],[[o,_,x],
+							 [x,x,o],
+							 [o,_,o]]).
+:- not(diagonale([o,o,o],[ [o,_,x],
+							 		[x,x,o],
+							 		[o,_,o]])).
 
 :- situation_gagnante([Ali,_,_]), alignement_gagnant(Ali,o).
 :- situation_perdante([Ali,_,_]), alignement_perdant(Ali,o).

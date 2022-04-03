@@ -68,8 +68,7 @@ A FAIRE : ECRIRE ici les clauses de negamax/5*/
     	not(ground(E)),
     	successeurs(J,E,Succ),
     	loop_negamax(J,P,Pmax,Succ,SuccSuiv),
-    	meilleur(SuccSuiv,[Coup2,Val2]),
-    	Coup = Coup2,
+    	meilleur(SuccSuiv,[Coup,Val2]),
     	Val is -Val2.
     	
 
@@ -130,7 +129,7 @@ A FAIRE : commenter chaque litteral de la 2eme clause de loop_negamax/5,
 	- le meilleur dans une liste a un seul element est cet element
 	- le meilleur dans une liste [X|L] avec L \= [], est obtenu en comparant
 	  X et Y,le meilleur couple de L 
-	  Entre X et Y on garde celui qui a la petite valeur de V.
+	  Entre X et Y on garde celui qui a la plus petite valeur de V.
 
 A FAIRE : ECRIRE ici les clauses de meilleur/2
 	*/
@@ -152,22 +151,14 @@ A FAIRE : ECRIRE ici les clauses de meilleur/2
   	PROGRAMME PRINCIPAL
   	*******************/
 
-main(B,V, Pmax) :-
+main(B, V, Pmax) :-
+	statistics(runtime,[Start|_]),
 	situation_initiale(Ini),
     joueur_initial(J),
-	negamax(J, Ini, 0, Pmax, [B,V]).
-	%main_loop(Ini, J, 1, B, V, Pmax).
-
-
-main_loop(Situation, Joueur, Profondeur, B, V, Pmax) :-
-	negamax(Joueur, Situation, Profondeur,Pmax,[B,V]),
-	successeur(Joueur, Situation, B),
-	adversaire(Joueur, J2),
-	Profondeur2 is (Profondeur + 1),
-	main_loop(Situation, J2, Profondeur2, B, V, Pmax).
-
-main_loop(Situation, _, _, _, _, _) :-
-	situation_terminale(_, Situation).
+	negamax(J, Ini, 1, Pmax, [B,V]),
+	statistics(runtime,[Stop|_]),
+	Runtime is Stop - Start,
+	write("Execution time: "), write(Runtime), write("ms"), nl.
 
 
 main_p(B,V,Pmax) :-
@@ -203,6 +194,19 @@ main_test(B,V,Pmax) :-
 											 [[3,2],[[x,_,x],
 												 	 [o,x,o],
 												 	 [o,o,o]]]]).
+
+:- meilleur([
+	[[1,1],5],
+	[[1,2],4],
+	[[2,2],2]], [[2,2],2]).
+
+:- meilleur([
+	[[1,1],5]], [[1,1],5]).
+
+:- meilleur([
+	[[1,1],2],
+	[[1,2],2],
+	[[2,2],4]], [[1,1],2]).
 
 	/*
 A FAIRE :
