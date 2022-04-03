@@ -50,6 +50,7 @@ Predicat principal de l'algorithme :
 main :-
 	% initialisations Pf, Pu et Q 
 	initial_state(S0),
+	write("Pour un etat initial : "), write(S0), nl,
 	heuristique(S0, H0),
 	G0 is 0,			
 	F0 is (G0 + H0),
@@ -67,21 +68,25 @@ main :-
 aetoile(Pf, Pu, _) :-
 	empty(Pf), empty(Pu), write("PAS de solution : l'etat final n'est pas atteignable"),!.
 
-aetoile(Pf, _, Q) :-
+aetoile(Pf, Pu, Q) :-
 	suppress_min([[_,_,_], S], Pf, _), final_state(S),
-	write("Q est "), put_90(Q), nl,
-	affiche_solution(S).
+	suppress([S, _, Padre, Act], Pu, _),
+	insert([S, _, Padre, Act], Q, Q_new),
+	% write("Q est "), put_90(Q_new), nl,
+	write("La solution est :"), nl,
+	
+	affiche_solution(S, Q_new).
 	
 aetoile(Pf, Pu, Q) :-
 	suppress_min([[F, H, G], U], Pf, Pf_new), 
 
 	suppress([U, Val, Pere, Action], Pu, Pu_new),
 	expand([[F, H, G], U], Slist),	% Le prédicat expand renvoie la liste des successeurs de U et leur évaluation
-	write("**** Listes des successeurs a un coup donne : "), write(Slist), nl,
+	% write("**** Listes des successeurs a un coup donne : "), write(Slist), nl,
 	loop_successors(Slist, Q, Pu_new, Pf_new, Pu_n, Pf_n, U), % On itère sur les successeurs et on les traite
 	insert([U, Val, Pere, Action], Q, Q_new),
-	write("**** Liste des etats joues : "), put_90(Q_new), nl,
-	write("**** Nouvel ensemble de Pf : "), put_90(Pf_n), nl,
+	% write("**** Liste des etats joues : "), put_90(Q_new), nl,
+	% write("**** Nouvel ensemble de Pf : "), put_90(Pf_n), nl,
 	aetoile(Pf_n, Pu_n, Q_new).
 
 
@@ -90,45 +95,56 @@ expand([[_, _, G], U], Slist) :-
 
 
 loop_successors([], _, Pu, Pf, Pu_new, Pf_new, _) :- 
-	Pu_new = Pu, Pf_new = Pf,
-	write("Plus de successeurs"), nl.
+	Pu_new = Pu, Pf_new = Pf.
+	% write("Plus de successeurs"), nl.
 	
 loop_successors([ [_, S] | TL], Q, Pu, Pf, Pu_new, Pf_new, Pere) :-
 	belongs([S,_,_,_], Q),
-	write("S est deja dans Q"), nl,
+	% write("S est deja dans Q"), nl,
 	loop_successors(TL, Q, Pu, Pf, Pu_new, Pf_new, Pere).
 
 loop_successors([ [Eval, S] | TL], Q, Pu, Pf, Pu_new, Pf_new, Pere) :-
-	write("---- Pu avant: ---- ") , put_90(Pu), nl,
-	write("S courant : "), write(S), nl,
+	% write("---- Pu avant: ---- ") , put_90(Pu), nl,
+	% write("S courant : "), write(S), nl,
 	
 	suppress([S, _, _ , _], Pu, Pun),	% Le prédicat échoue si S n'est pas dans Pu
-	write("!!! S est deja dans Pu !!!"), nl,
+	% write("!!! S est deja dans Pu !!!"), nl,
 	suppress([EvalF, S], Pf, Pfn),		% Permet de récupérer l'évaluation correspondante dans Pf
 	( Eval @< EvalF ->
 		insert([Eval, S], Pfn, Pf2),
 		insert([Eval, S], Pun, Pu2),
-		write("S est meilleur que l'etat deja rencontre"), nl,
+		% write("S est meilleur que l'etat deja rencontre"), nl,
 		loop_successors(TL, Q, Pu2, Pf2, Pu_new, Pf_new, Pere)
 	;
-		write("S est moins bon que l'etat deja rencontre"), nl,
+		% write("S est moins bon que l'etat deja rencontre"), nl,
 
 		loop_successors(TL, Q, Pu, Pf, Pu_new, Pf_new, Pere)
 	).
 	% loop_successors(TL, Q, Pu_new, Pf_new, _, _, Pere).
 	
 loop_successors([ [Eval, S] | TL], Q, Pu, Pf, Pu_new, Pf_new, Pere) :-
-	write("S doit etre ajoute: "), write(S), nl,
+	% write("S doit etre ajoute: "), write(S), nl,
 	rule(X, _, Pere, S),
 	insert([Eval, S], Pf, Pf2),
 	insert( [S, Eval, Pere, X], Pu, Pu2),
-	write("Les successeurs de l'etat sont toujours : "), write(TL), nl,
-	write("Pf2 apres insertion : "), put_90(Pf2), nl,
-	write("Pu2 apres insertion : "), put_90(Pu2), nl,
+	% write("Les successeurs de l'etat sont toujours : "), write(TL), nl,
+	% write("Pf2 apres insertion : "), put_90(Pf2), nl,
+	% write("Pu2 apres insertion : "), put_90(Pu2), nl,
 	loop_successors(TL, Q, Pu2, Pf2, Pu_new, Pf_new, Pere).
 
-affiche_solution(S) :-
-	write("Solution : "),!.
+affiche_solution(S, _) :-
+	initial_state(S).
+
+affiche_solution(S, Q) :-
+	% write(S), nl,
+	% write("Q est : "), put_90(Q), nl,
+	suppress([S, _, Padre, Act], Q, Q_new),
+	% write(Padre), write(" -> "), write(Padre), nl,
+	affiche_solution(Padre, Q_new),
+	write(Act), nl.
+
+affiche_solution(_, _) :-
+	write("protection contre boucle infinie en cas d'erreur"), nl.
 
 
 	
