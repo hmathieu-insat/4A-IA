@@ -158,7 +158,7 @@ alignement_perdant(Ali, J) :- adversaire(J,A), alignement_gagnant(Ali,A).
 	lorsqu'un joueur J joue en coordonnees [L,C]
 	*/
 
-successeur(J, Etat,[L,C]) :- nth1(L, Etat, Lig), nth1(C, Lig, J), var(Elem), Elem = J.
+successeur(J, Etat,[L,C]) :- nth1(L, Etat, Lig), nth1(C, Lig, J).
 
 
 
@@ -198,8 +198,8 @@ heuristique(J,Situation,H) :-
 % Tests unitaires
 
 situation_gagnante([ [o,o,o],
-							[x,x,o],
-							[x,o,x]]).
+							[x,_,o],
+							[x,_,x]]).
 
 situation_perdante([ [x,x,x],
 							[o,o,x],
